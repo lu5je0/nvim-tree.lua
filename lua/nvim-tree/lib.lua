@@ -50,15 +50,20 @@ end
 
 local function get_node_at_line(line)
   local index = view.View.hide_root_folder and 1 or 2
-  local function iter(entries)
+  local function iter(entries, parent_node)
     for _, node in ipairs(entries) do
       if index == line then
+        if parent_node ~= nil then
+          node.parent_path = parent_node.absolute_path
+        end
         return node
       end
       index = index + 1
       if node.open == true then
-        local child = iter(node.entries)
-        if child ~= nil then return child end
+        local child = iter(node.entries, node)
+        if child ~= nil then
+          return child
+        end
       end
     end
   end
@@ -69,7 +74,10 @@ local function get_line_from_node(node, find_parent)
   local node_path = node.absolute_path
 
   if find_parent then
-    node_path = node.absolute_path:match("(.*)"..utils.path_separator)
+    node_path = node.parent_path
+    if node_path == nil then
+      node_path = node.absolute_path
+    end
   end
 
   local line = 2
@@ -137,6 +145,11 @@ function M.expand_or_collapse(node)
   end
 
   diagnostics.update()
+
+  -- jump to child_nodes by lu5je0
+  if node.open and not node.has_children and #node.entries > 0 then
+    vim.api.nvim_feedkeys("j", "", true)
+  end
 end
 
 local function refresh_nodes(node, projects)
