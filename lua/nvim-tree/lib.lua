@@ -76,6 +76,11 @@ function M.expand_or_collapse(node)
 
   renderer.draw()
   diagnostics.update()
+
+ -- jump to child_nodes by lu5je0
+  if node.open and not node.has_children and #node.nodes > 0 then
+    vim.api.nvim_feedkeys("j", "", true)
+  end
 end
 
 function M.set_target_win()
