@@ -14,7 +14,10 @@ local function get_line_from_node(node, find_parent)
   local node_path = node.absolute_path
 
   if find_parent then
-    node_path = node.absolute_path:match("(.*)" .. utils.path_separator)
+    node_path = node.parent_path
+    if node_path == nil then
+      node_path = node.absolute_path:match("(.*)" .. utils.path_separator)
+    end
   end
 
   local line = 2
