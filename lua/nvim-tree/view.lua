@@ -19,6 +19,7 @@ M.View = {
     cursorcolumn = false,
     cursorlineopt = "line",
     colorcolumn = "0",
+    cursorline = true,
     wrap = false,
     winhl = table.concat({
       "EndOfBuffer:NvimTreeEndOfBuffer",
