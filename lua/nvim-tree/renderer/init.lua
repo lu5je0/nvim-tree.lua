@@ -1,3 +1,4 @@
+local log = require "nvim-tree.log"
 local utils = require "nvim-tree.utils"
 local view = require "nvim-tree.view"
 local _padding = require "nvim-tree.renderer.padding"
@@ -221,7 +222,7 @@ end
 local M = {}
 
 local function compute_header()
-  if view.is_root_folder_visible() then
+  if view.is_root_folder_visible(core.get_cwd()) then
     local root_folder_modifier = vim.g.nvim_tree_root_folder_modifier or ":~"
     local root_name = utils.path_join {
       utils.path_remove_trailing(vim.fn.fnamemodify(core.get_cwd(), root_folder_modifier)),
@@ -238,6 +239,9 @@ function M.draw()
   if not core.get_explorer() or not bufnr or not api.nvim_buf_is_loaded(bufnr) then
     return
   end
+
+  local ps = log.profile_start "draw"
+
   local cursor
   if view.is_visible() then
     cursor = api.nvim_win_get_cursor(view.get_winnr())
@@ -266,6 +270,8 @@ function M.draw()
   if cursor and #lines >= cursor[1] then
     api.nvim_win_set_cursor(view.get_winnr(), cursor)
   end
+
+  log.profile_end(ps, "draw")
 end
 
 function M.render_hl(bufnr)

@@ -64,8 +64,8 @@ let g:nvim_tree_show_icons = {
 " default will show icon by default if no icon is provided
 " default shows no icon by default
 let g:nvim_tree_icons = {
-    \ 'default': '',
-    \ 'symlink': '',
+    \ 'default': "",
+    \ 'symlink': "",
     \ 'git': {
     \   'unstaged': "✗",
     \   'staged': "✓",
@@ -117,7 +117,6 @@ require'nvim-tree'.setup {
 -- setup with all defaults
 -- each of these are documented in `:help nvim-tree.OPTION_NAME`
 require'nvim-tree'.setup { -- BEGIN_DEFAULT_OPTS
-  auto_close = false,
   auto_reload_on_write = true,
   disable_netrw = false,
   hide_root_folder = false,
@@ -206,7 +205,9 @@ require'nvim-tree'.setup { -- BEGIN_DEFAULT_OPTS
     types = {
       all = false,
       config = false,
+      copy_paste = false,
       git = false,
+      profile = false,
     },
   },
 } -- END_DEFAULT_OPTS
@@ -328,12 +329,44 @@ You can toggle the help UI by pressing `g?`.
 2. You can update window options for the tree by setting `require"nvim-tree.view".View.winopts.MY_OPTION = MY_OPTION_VALUE`
 3. `toggle` has a second parameter which allows to toggle without focusing the explorer (`require"nvim-tree.toggle(false, false)`).
 4. You can allow nvim-tree to behave like vinegar (see `:help nvim-tree-vinegar`).
+5. If you `:set nosplitright`, the files will open on the left side of the tree, placing the tree window in the right side of the file you opened.
+6. You can automatically close the tab/vim when nvim-tree is the last window in the tab. WARNING: other plugins or automation may interfere with this:
+```vim
+autocmd BufEnter * ++nested if winnr('$') == 1 && bufname() == 'NvimTree_' . tabpagenr() | quit | endif
+```
 
 ## Diagnostic Logging
 
-You may enable diagnostic logging and a file `nvim-tree-HH:MM:SS-username.log` will be created in `$XDG_CACHE_HOME/nvim`, usually `~/.cache/nvim`, containing logs from that nvim session. See `:help nvim-tree.log`.
+You may enable diagnostic logging and a file `nvim-tree.log` will be created in `$XDG_CACHE_HOME/nvim`, usually `~/.cache/nvim`, containing logs from that nvim session. See `:help nvim-tree.log`.
 
 The files may become large and numerous, so it is advised to turn on logging to diagnose an issue or while reporting a bug, then turn it off.
+
+## Performance Issues
+
+If you are experiencing performance issues with nvim-tree.lua, you can enable profiling in the logs. It is advisable to enable git logging at the same time, as that can be a source of performance problems.
+
+```lua
+log = {
+  enable = true,
+  truncate = true,
+  types = {
+    git = true,
+    profile = true,
+  },
+},
+```
+
+Please attach `$XDG_CACHE_HOME/nvim/nvim-tree.log` if you raise an issue.
+
+*Performance Tips:*
+
+* If you are using fish as an editor shell (which might be fixed in the future), try set `shell=/bin/bash` in your vim config.
+
+* Try manually running the git command (see the logs) in your shell e.g. `git --no-optional-locks status --porcelain=v1 --ignored=matching -u`.
+
+* Huge git repositories may timeout after the default `git.timeout` of 400ms. Try increasing that in your setup if you see `[git] job timed out` in the logs.
+
+* Try temporarily disabling git integration by setting `git.enable = false` in your setup.
 
 ## Screenshots
 
