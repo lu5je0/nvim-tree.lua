@@ -36,6 +36,10 @@ local function populate_children(handle, cwd, node, status)
       end
     end
   end
+
+  for _, child_node in pairs(node.nodes) do
+    child_node.parent_path = node.absolute_path
+  end
 end
 
 local function get_dir_handle(cwd)
