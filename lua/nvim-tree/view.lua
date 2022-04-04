@@ -324,9 +324,9 @@ function M._prevent_buffer_override()
     local curwin = a.nvim_get_current_win()
     local curbuf = a.nvim_win_get_buf(curwin)
     local bufname = a.nvim_buf_get_name(curbuf)
-    if not bufname:match "NvimTree" then
-      M.View.tabpages = {}
-    end
+    -- if not bufname:match "NvimTree" then
+    --   M.View.tabpages = {}
+    -- end
     if curwin ~= view_winnr or bufname == "" or curbuf == view_bufnr then
       return
     end
