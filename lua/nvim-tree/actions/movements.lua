@@ -21,7 +21,7 @@ local function get_line_from_node(node, find_parent)
   local function iter(nodes, recursive)
     for _, _node in ipairs(nodes) do
       local n = lib().get_last_group_node(_node)
-      if node_path == n.absolute_path then
+      if node_path == n.absolute_path or node_path == n.link_to then
         return line, _node
       end
 
